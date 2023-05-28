@@ -2,27 +2,99 @@ import 'package:easy_hotel/app/data/model/auth/login/dto/request/login_request.d
 import 'package:easy_hotel/app/data/model/auth/login/dto/response/login_response.dart';
 
 import 'package:easy_hotel/app/data/model/base_request.dart';
+import 'package:easy_hotel/app/data/model/delivery/homePage/dto/request/active_orders_request.dart';
+import 'package:easy_hotel/app/data/model/delivery/homePage/dto/request/all_orders_request.dart';
+import 'package:easy_hotel/app/data/model/delivery/homePage/dto/request/delayed_orders_request.dart';
+import 'package:easy_hotel/app/data/model/delivery/homePage/dto/request/deliver_finish_request.dart';
+import 'package:easy_hotel/app/data/model/delivery/homePage/dto/request/deliver_orders_request.dart';
+import 'package:easy_hotel/app/data/model/delivery/homePage/dto/request/deliver_request.dart';
+import 'package:easy_hotel/app/data/model/delivery/homePage/dto/response/order_response.dart';
 import 'package:easy_hotel/app/data/provider/api_provider.dart';
 
-class AuthRepository {
+class DeliveryRepository {
 
 
-  login(
-    LoginRequestDto request, {
-    SuccessFunc<LoginResponse> onSuccess,
-    Function(dynamic error)? onError,
+  getActiveOrders(
+      ActiveOrdersRequestDto activeOrdersRequestDto, {
         Function()? onComplete,
-    // Function(dynamic error)? onError,  Function()?onComplete,
-  }) {
-    ApiProvider().post<LoginResponse>(
-      'auth/loginNew',
-      onSuccess: onSuccess,
-      data: request.toJson(),
-      onComplete: onComplete,
-      queryParameters: request.toJson(),
-      onError: onError,
-      convertor: LoginResponse.fromJson,
-      // onComplete: onComplete
+        SuccessFunc<List<OrderResponse>> onSuccess,
+        Function(dynamic error)? onError,
+      }) =>
+      ApiProvider().post<List<OrderResponse>>('Cars/allCarFinishAndStartIsNull',
+        onComplete: onComplete,
+        onSuccess: onSuccess,
+        data: activeOrdersRequestDto.toJson(),
+        onError: onError,
+        convertor: OrderResponse.fromList,
+      );
+
+  getDeliveredOrders(
+      DeliverOrdersRequestDto deliverOrdersRequestDto, {
+        Function()? onComplete,
+        SuccessFunc<List<OrderResponse>> onSuccess,
+        Function(dynamic error)? onError,
+      }) =>
+      ApiProvider().post<List<OrderResponse>>('Cars/allCarFinishIsNull',
+        onComplete: onComplete,
+        onSuccess: onSuccess,
+        data: deliverOrdersRequestDto.toJson(),
+        onError: onError,
+        convertor: OrderResponse.fromList,
+      );
+
+  getAllOrders(
+      AllOrdersRequestDto allOrdersRequestDto, {
+        Function()? onComplete,
+        SuccessFunc<List<OrderResponse>> onSuccess,
+        Function(dynamic error)? onError,
+      }) =>
+      ApiProvider().post<List<OrderResponse>>('Cars/allBollmanOrder',
+        onComplete: onComplete,
+        onSuccess: onSuccess,
+        data: allOrdersRequestDto.toJson(),
+        onError: onError,
+        convertor: OrderResponse.fromList,
+      );
+  getDelayedOrders(
+      DelayOrdersRequestDto delayOrdersRequestDto, {
+        Function()? onComplete,
+        SuccessFunc<List<OrderResponse>> onSuccess,
+        Function(dynamic error)? onError,
+      }) =>
+      ApiProvider().post<List<OrderResponse>>('Cars/allCarFinishIsNotNull',
+        onComplete: onComplete,
+        onSuccess: onSuccess,
+        data: delayOrdersRequestDto.toJson(),
+        onError: onError,
+        convertor: OrderResponse.fromList,
+      );
+  getdeliver(
+      DeliverRequestDto deliverRequestDto, {
+        SuccessFunc<void> onSuccess,
+        Function(dynamic error)? onError,  Function()?onComplete,
+      }) {
+    ApiProvider().post<void>(
+        'Cars/updateCarIdAndDate',
+        onSuccess: onSuccess,
+        data: deliverRequestDto.toJson(),
+        onError: onError,
+        convertor: (_){return null;},
+        onComplete: onComplete
     );
   }
+  getFinishdeliver(
+      DeliverFinishRequestDto deliverFinishRequestDto, {
+        SuccessFunc<void> onSuccess,
+        Function(dynamic error)? onError,  Function()?onComplete,
+      }) {
+    ApiProvider().post<void>(
+        'Cars/updateFinishDate',
+        onSuccess: onSuccess,
+        data: deliverFinishRequestDto.toJson(),
+        onError: onError,
+        convertor: (_){return null;},
+        onComplete: onComplete
+    );
+  }
+
 }
