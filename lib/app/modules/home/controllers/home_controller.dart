@@ -10,7 +10,12 @@ import 'package:easy_hotel/app/data/model/delivery/homePage/dto/request/deliver_
 import 'package:easy_hotel/app/data/model/delivery/homePage/dto/response/order_response.dart';
 import 'package:easy_hotel/app/data/repository/delivery/delivery_repository.dart';
 import 'package:get/get.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../../../../main.dart';
+import '../../../core/values/app_strings.dart';
 class HomeController extends GetxController {
 
   RxInt  index = 0.obs;
@@ -31,7 +36,42 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     getActiveOrders();
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
+    firebaseMessaging.subscribeToTopic(AppConstants.spa);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    });
+    var initialzationSettingsAndroid = const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification!.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription: channel.description,
+                icon: android.smallIcon,
+                importance: Importance.max,
+                priority: Priority.max,
+                playSound: true,
+
+              ),
+            ));
+
+        FirebaseMessaging.onMessageOpenedApp.listen((event) {
+          print("sdsd");
+        });
+      }
+    });
 
   }
 
@@ -39,9 +79,6 @@ class HomeController extends GetxController {
      isLoading(true);
      final request = ActiveOrdersRequestDto(
        branchId: UserManager().user!.branchId,
-
-
-
      );
      DeliveryRepository().getActiveOrders(request,
          onSuccess: (data) {
@@ -111,7 +148,7 @@ class HomeController extends GetxController {
      delayedOrders.value = List<OrderResponse>.from(allDelayedOrders.where((element) => element.customerName!.contains(num)).toList());
 
    }
-   getDeliver(int id ,int ?deliverId) async {
+   getDeliver(int id ,int ?deliverId , int? customerId) async {
      isLoading(true);
      final request = DeliverRequestDto(
        id: id,
@@ -120,12 +157,13 @@ class HomeController extends GetxController {
      DeliveryRepository().getdeliver(request,
          onSuccess: (data) {
            getActiveOrders();
-           showPopupText( "تم البدء ");
+           UserManager().sendNewOrderNotification("${AppConstants.customer}_$customerId" , AppStrings.orderStarted);
+           showPopupText(AppStrings.orderStarted);
          },
          onError: (e) => showPopupText( e.toString()),
          onComplete: () => isLoading(false)
      );
-   }   getFinishDeliver(int id) async {
+   }   getFinishDeliver(int id , int customerId ) async {
      isLoading(true);
      final request = DeliverFinishRequestDto(
        id: id,
@@ -133,7 +171,8 @@ class HomeController extends GetxController {
      DeliveryRepository().getFinishdeliver(request,
          onSuccess: (data) {
            getDeliveredOrders();
-           showPopupText( "تم الانتهاء ");
+           UserManager().sendNewOrderNotification("${AppConstants.customer}_$customerId" , AppStrings.orderFinished);
+           showPopupText(AppStrings.orderFinished);
          },
          onError: (e) => showPopupText( e.toString()),
          onComplete: () => isLoading(false)

@@ -166,7 +166,7 @@ class OrderContainer extends GetView<HomeController> {
 
                       showDetails ?   GestureDetector(
                         onTap: (){
-                          controller.index.value == 0 ?controller.getDeliver(controller.activeOrders[i].id!, UserManager().user!.id,):controller.getFinishDeliver(controller.deliverdOrders[i].id!);
+                          controller.index.value == 0 ?controller.getDeliver(controller.activeOrders[i].id!, UserManager().user!.id,controller.activeOrders[i].customerId!):controller.getFinishDeliver(controller.deliverdOrders[i].id!,controller.activeOrders[i].customerId!);
                           controller.index.value == 0 ?controller.getActiveOrders():controller.getDeliveredOrders();
                           // controller.getDeliveredOrders();
                           // controller.getAllOrders();
