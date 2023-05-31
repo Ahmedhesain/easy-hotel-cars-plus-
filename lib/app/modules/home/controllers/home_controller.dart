@@ -38,7 +38,7 @@ class HomeController extends GetxController {
     getActiveOrders();
     final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
-    firebaseMessaging.subscribeToTopic(AppConstants.spa);
+    firebaseMessaging.subscribeToTopic(AppConstants.cars);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
     });
