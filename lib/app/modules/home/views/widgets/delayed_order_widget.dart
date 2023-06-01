@@ -13,6 +13,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../../../components/app_refresh_indecetor.dart';
+
 
 class DelayedOrdersWidget extends GetView<HomeController> {
   const DelayedOrdersWidget({Key? key})
@@ -31,39 +33,42 @@ class DelayedOrdersWidget extends GetView<HomeController> {
           child: Common.getSpin(),
         );
       }
-      return Obx(() {
-        return Column(
-          children: [
-            for(int i = 0; i < controller.delayedOrders.length; i ++)
-              OrderContainer(
-                  false,
-                  controller.delayedOrders[i].id.toString() ?? "0",
-                  controller.delayedOrders[i].carName!,
-                  controller.delayedOrders[i].groupName!,
-                  controller.delayedOrders[i].dueDate??DateTime.now(),
-                  controller.delayedOrders[i].trafficName.toString(),
-                  controller.delayedOrders[i].isGoingAndRetrun??0,
-                  controller.delayedOrders[i].personNumber.toString() ,
-                  controller.delayedOrders[i].remark??"لايوجد" ,
-                  (controller.delayedOrders[i].dueTime??DateTime.now()).toString(),
-                  controller.delayedOrders[i].name ?? "",
-                  controller.delayedOrders[i].phone ?? "",
-                  controller.delayedOrders[i].id.toString(),
-                  i,
-                  controller.delayedOrders[i].startDate??DateTime.now()
+      return AppRefreshIndicator(
+        onRefresh: () async => await controller.getDelyedOrders(),
+        child: Obx(() {
+          return Column(
+            children: [
+              for(int i = 0; i < controller.delayedOrders.length; i ++)
+                OrderContainer(
+                    false,
+                    controller.delayedOrders[i].id.toString() ?? "0",
+                    controller.delayedOrders[i].carName!,
+                    controller.delayedOrders[i].groupName!,
+                    controller.delayedOrders[i].dueDate??DateTime.now(),
+                    controller.delayedOrders[i].trafficName.toString(),
+                    controller.delayedOrders[i].isGoingAndRetrun??0,
+                    controller.delayedOrders[i].personNumber.toString() ,
+                    controller.delayedOrders[i].remark??"لايوجد" ,
+                    (controller.delayedOrders[i].dueTime??DateTime.now()).toString(),
+                    controller.delayedOrders[i].name ?? "",
+                    controller.delayedOrders[i].phone ?? "",
+                    controller.delayedOrders[i].id.toString(),
+                    i,
+                    controller.delayedOrders[i].startDate??DateTime.now()
 
-                ,
-                  controller.delayedOrders[i].finishDate??DateTime.now()
+                  ,
+                    controller.delayedOrders[i].finishDate??DateTime.now()
 
-                ,
+                  ,
 
 
 
-              ),
+                ),
 
-          ],
-        );
-      });
+            ],
+          );
+        }),
+      );
     });
   }
 

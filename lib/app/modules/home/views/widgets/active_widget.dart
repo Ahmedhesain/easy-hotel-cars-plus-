@@ -13,17 +13,14 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../../../components/app_refresh_indecetor.dart';
 
 class ActiveOrdersWidget extends GetView<HomeController> {
-  const ActiveOrdersWidget({Key? key})
-      : super(key: key);
-
+  const ActiveOrdersWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
 
     return Obx(() {
       if (controller.isLoading.value) {
@@ -33,45 +30,35 @@ class ActiveOrdersWidget extends GetView<HomeController> {
       }
       return SizedBox(
           width: size.width,
-          child: Obx(() {
-            return Column(
-              children: [
-                for(int i = 0; i < controller.activeOrders.length; i ++)
-                  OrderContainer(
+          child: AppRefreshIndicator(
+            onRefresh: () async => await controller.getActiveOrders(),
+            child: Obx(() {
+              return Column(
+                children: [
+                  for (int i = 0; i < controller.activeOrders.length; i++)
+                    OrderContainer(
                       true,
                       controller.activeOrders[i].id.toString() ?? "",
                       controller.activeOrders[i].carName!,
                       controller.activeOrders[i].groupName!,
-                      controller.activeOrders[i].dueDate ??DateTime.now(),
+                      controller.activeOrders[i].dueDate ?? DateTime.now(),
                       controller.activeOrders[i].trafficName.toString(),
-                      controller.activeOrders[i].isGoingAndRetrun??0,
-                      controller.activeOrders[i].personNumber.toString() ,
-                      controller.activeOrders[i].remark??"لايوجد" ,
-                      (controller.activeOrders[i].dueTime??DateTime.now()).toString(),
+                      controller.activeOrders[i].isGoingAndRetrun ?? 0,
+                      controller.activeOrders[i].personNumber.toString(),
+                      controller.activeOrders[i].remark ?? "لايوجد",
+                      (controller.activeOrders[i].dueTime ?? DateTime.now())
+                          .toString(),
                       controller.activeOrders[i].name ?? "",
                       controller.activeOrders[i].phone ?? "",
                       controller.activeOrders[i].customerId.toString(),
                       i,
-                        controller.activeOrders[i].startDate??DateTime.now()
-
-                    ,
-                      controller.activeOrders[i].finishDate ??DateTime.now()
-
-                    ,
-
-
-
-
-
-
-                  ),
-
-              ],
-            );
-          })
-      );
+                      controller.activeOrders[i].startDate ?? DateTime.now(),
+                      controller.activeOrders[i].finishDate ?? DateTime.now(),
+                    )
+                ],
+              );
+            }),
+          ));
     });
   }
-
 }
-

@@ -60,30 +60,6 @@ class HomeView extends GetView<HomeController> {
                           AppAssets.cars
                         ),
                         fit: BoxFit.cover)),
-
-                // padding: EdgeInsets.fromLTRB(0, 75.h, 0, 0),
-                // child: Column(
-                //   crossAxisAlignment: CrossAxisAlignment.stretch,
-                //   children: [
-                //     Center(child: TextWidget(
-                //       "Search For Order", textColor: Colors.white,
-                //       size: 20.h,
-                //       weight: FontWeight.bold,)),
-                //     // Center(
-                //     //   child: SizedBox(
-                //     //       width: size.width * .8,
-                //     //       child: TextFieldWidget(
-                //     //         label: AppStrings.search,
-                //     //         suffixIcon: Icons.search,
-                //     //         onChange: (value) {
-                //     //           controller.filter(value);
-                //     //         },
-                //     //         ltr: true,
-                //     //       )
-                //     //   ),
-                //     // ),
-                //   ],
-                // ),
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children:  [
