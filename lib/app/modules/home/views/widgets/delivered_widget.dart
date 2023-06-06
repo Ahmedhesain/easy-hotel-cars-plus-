@@ -2,6 +2,7 @@
 import 'package:easy_hotel/app/core/utils/common.dart';
 import 'package:easy_hotel/app/modules/home/controllers/home_controller.dart';
 import 'package:easy_hotel/app/modules/home/views/widgets/order_container.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -33,38 +34,34 @@ class DeliveredOrdersWidget extends GetView<HomeController> {
             child: AppRefreshIndicator(
               onRefresh: () async => await controller.getDeliveredOrders(),
               child: Obx(() {
-                return Column(
-                  children: [
-                    for(int i = 0; i < controller.deliverdOrders.length; i ++)
-                      OrderContainer(
-                          true,
-                          controller.deliverdOrders[i].id.toString() ?? "",
-                          controller.deliverdOrders[i].carName!,
-                          controller.deliverdOrders[i].groupName!,
-                          controller.deliverdOrders[i].dueDate??DateTime.now(),
-                          controller.deliverdOrders[i].trafficName.toString(),
-                          controller.deliverdOrders[i].isGoingAndRetrun??0,
-                          controller.deliverdOrders[i].personNumber.toString() ,
-                          controller.deliverdOrders[i].remark??"لايوجد" ,
-                          (controller.deliverdOrders[i].dueTime??DateTime.now()).toString(),
-                          controller.deliverdOrders[i].name ?? "",
-                          controller.deliverdOrders[i].phone ?? "",
-                          controller.deliverdOrders[i].id.toString(),
-                          i,
-                          controller.deliverdOrders[i].startDate??DateTime.now()
-
-                        ,
-                          controller.deliverdOrders[i].finishDate??DateTime.now()
-
-                        ,
-
-                      ),
-
-                  ],
+                return ListView.builder(
+                  itemCount: controller.deliverdOrders.length,
+                  padding: const EdgeInsets.all(4),
+                  dragStartBehavior: DragStartBehavior.start,
+                  itemBuilder: (context, i) {
+                    final order = controller.deliverdOrders[i];
+                    return OrderContainer(
+                      true,
+                      order.id.toString() ?? "",
+                      order.carName!,
+                      order.groupName!,
+                      order.dueDate ?? DateTime.now(),
+                      order.trafficName.toString(),
+                      order.isGoingAndRetrun ?? 0,
+                      order.personNumber.toString(),
+                      order.remark ?? "لايوجد",
+                      (order.dueTime ?? DateTime.now()).toString(),
+                      order.name ?? "",
+                      order.phone ?? "",
+                      order.customerId.toString(),
+                      i,
+                      order.startDate ?? DateTime.now(),
+                      order.finishDate ?? DateTime.now(),
+                    );
+                  },
                 );
               }),
-            )
-        );
+            ));
 
     });
   }

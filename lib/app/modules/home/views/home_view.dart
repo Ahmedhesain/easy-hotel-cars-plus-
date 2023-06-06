@@ -29,7 +29,8 @@ class HomeView extends GetView<HomeController> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
-          title: TextWidget(AppStrings.carsServices, size: 30.h,textColor: Colors.white,),
+          title: TextWidget(
+            AppStrings.carsServices, size: 30.h, textColor: Colors.white,),
           flexibleSpace: Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -49,48 +50,51 @@ class HomeView extends GetView<HomeController> {
         ),
         body:
 
-           ListView(
-            padding: EdgeInsets.zero,
+        Column(
+          mainAxisAlignment:MainAxisAlignment.start,
+          children: [
+          Container(
+            height: 200.h,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(
+                        AppAssets.cars
+                    ),
+                    fit: BoxFit.cover)),
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                height: 200.h,
-                decoration: const  BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                          AppAssets.cars
-                        ),
-                        fit: BoxFit.cover)),
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:  [
-                  FilterBarWidgets(
-                    title: AppStrings.active, index: 0,),
-                  FilterBarWidgets(
-                    title: "تم البدء", index: 1,),
-                  FilterBarWidgets(title: AppStrings.done, index: 2,),
-                  FilterBarWidgets(title: AppStrings.allorders, index: 3)
-                ],),
+              FilterBarWidgets(
+                title: AppStrings.active, index: 0,),
+              FilterBarWidgets(
+                title: "تم البدء", index: 1,),
+              FilterBarWidgets(title: AppStrings.done, index: 2,),
+              FilterBarWidgets(title: AppStrings.allorders, index: 3)
+            ],),
 
-              Container(
-                height: size.height * .002, color: AppColors.appBlue,
-              ),
-              Obx(() {
-                if(controller.isLoading.value){
-                  return Center(
-                    child: Common.getSpin(),
-                  );
-                }
-                return [
-                  const ActiveOrdersWidget(),
-                  const DeliveredOrdersWidget(),
-                  const DelayedOrdersWidget(),
-                  const AllOrdersWidget(),
-                ][controller.index.value];
-              })
+          Container(
+            height: size.height * .002, color: AppColors.appBlue,
+          ),
+          Obx(() {
+            if (controller.isLoading.value) {
+              return Center(
+                child: Common.getSpin(),
+              );
+            }
+            return SizedBox(
+              height: 550.h,
+              child: [
+                const ActiveOrdersWidget(),
+                const DeliveredOrdersWidget(),
+                const DelayedOrdersWidget(),
+                const AllOrdersWidget(),
+              ][controller.index.value],
+            );
+          })
 
 
-            ],
-          )
+        ],
+        )
 
     );
   }
